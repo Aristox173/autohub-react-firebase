@@ -1,30 +1,62 @@
-import { Link } from "react-router-dom";
+// Register.jsx
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../controllers/userController.ts";
 
 const Register = () => {
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    isSupplier: true,
+  });
+  const navigate = useNavigate();
+
+  const handleInput = (e) => {
+    const { id, value } = e.target;
+    setUserData({ ...userData, [id]: value });
+  };
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+
+    try {
+      await registerUser(userData);
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="register">
       <h1>Create Account</h1>
-      <form onSubmit="">
+      <form onSubmit={handleAdd}>
         <label>Name</label>
-        <input id="userName" type="text" placeholder="User 1" onChange="" />
+        <input
+          id="name"
+          type="text"
+          placeholder="User 1"
+          onChange={handleInput}
+        />
         <label>Email</label>
         <input
-          id="userEmail"
+          id="email"
           type="email"
           placeholder="user1@email.com"
-          onChange=""
+          onChange={handleInput}
         />
         <label>Password</label>
         <input
-          id="userPassword"
+          id="password"
           type="password"
           placeholder="**********"
-          onChange=""
+          onChange={handleInput}
         />
         <label htmlFor="isSupplier">Choose a role:</label>
-        <select id="isSupplier" onChange="">
-          <option value="supplier">Supplier</option>
-          <option value="mechanic">Mechanic</option>
+        <select id="isSupplier" onChange={handleInput}>
+          <option value="true">Supplier</option>
+          <option value="false">Mechanic</option>
         </select>
         <button type="submit">Register User</button>
       </form>
